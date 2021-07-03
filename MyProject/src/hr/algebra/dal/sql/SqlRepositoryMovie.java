@@ -5,7 +5,6 @@
  */
 package hr.algebra.dal.sql;
 
-import hr.algebra.dal.Repository;
 import hr.myproject.model.Movie;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -16,8 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
+import hr.algebra.dal.RepositoryMovie;
+import hr.myproject.model.Person;
 
-public class SqlRepository implements Repository {
+public class SqlRepositoryMovie implements RepositoryMovie {
 
     private static final String ID_MOVIE = "IDMovie";
     private static final String TITLE = "Title";
@@ -35,7 +36,8 @@ public class SqlRepository implements Repository {
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
-    private static final String SELECT_MOVIES = "{ CALL selectMovies }";
+    private static final String SELECT_MOVIES = "{ CALL selectMovies }"; 
+
 
     @Override
     public int createMovie(Movie movie) throws Exception {
@@ -161,7 +163,7 @@ public class SqlRepository implements Repository {
                         LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
                         rs.getString(DESCRIPTION),
                         rs.getString(ORIGINAL_TITLE),
-                        rs.getString(PERSON_ID),
+                        rs.getObject(new List<Person>()),
                         rs.getString(DURATION),
                         rs.getString(GENRE),
                         rs.getString(PICTURE_PATH),
@@ -171,5 +173,4 @@ public class SqlRepository implements Repository {
         }
         return movies;
     }
-
 }

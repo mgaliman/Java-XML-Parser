@@ -41,7 +41,7 @@ import javax.xml.stream.events.XMLEvent;
  */
 public class MovieParser {
 
-    private static final String RSS_URL = "https://www.blitz-cinestar.hr/rss.aspx?najava=1";
+    private static final String RSS_URL = "https://www.blitz-cinestar.hr/rss.aspx?";
     private static final String ATTRIBUTE_URL = "url";
     private static final String EXT = ".jpg";
     private static final String DIR = "assets";
@@ -67,17 +67,19 @@ public class MovieParser {
                     case XMLStreamConstants.START_ELEMENT:
                         startElement = event.asStartElement();
                         String qName = startElement.getName().getLocalPart();
-                        tagType = TagType.from(qName);
+                        tagType = TagType.from(qName);                        
+                        switch (tagType.get()) {
+                                case ITEM:                                    
+                                    movie = new Movie();                                    
+                                    movies.add(movie);
+                                    break;
+                        }
                         break;
                     case XMLStreamConstants.CHARACTERS:
                         if (tagType.isPresent()) {
                             Characters characters = event.asCharacters();
                             String data = characters.getData().trim();
-                            switch (tagType.get()) {
-                                case ITEM:
-                                    movie = new Movie();
-                                    movies.add(movie);
-                                    break;
+                            switch (tagType.get()) {                                
                                 case TITLE:
                                     if (movie != null && !data.isEmpty()) {
                                         movie.setTitle(data);
@@ -106,8 +108,7 @@ public class MovieParser {
                                         person.setFirstName(data.substring(0, data.lastIndexOf(" ")));
                                         person.setLastName(data.substring(data.lastIndexOf(" ")).trim());
 
-                                        //System.out.println(person);
-
+                                        System.out.println(person);
                                         persons.add(person);
                                     }
                                     break;

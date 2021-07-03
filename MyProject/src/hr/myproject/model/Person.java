@@ -28,6 +28,10 @@ public class Person implements Comparable<Person> {
         this.id = id;
     }
 
+    public Person(int id) {
+        this.id = id;
+    }    
+    
     public int getId() {
         return id;
     }

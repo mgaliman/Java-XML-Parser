@@ -172,3 +172,13 @@ BEGIN
 	SELECT * FROM Person
 END
 GO
+
+--DELETE PROCEDURE--
+create proc deleteAllData
+	@IDMovie int,
+	@IDPerson int
+as 
+	begin
+		delete from Movie where IDMovie = @IDMovie
+		delete from Person where IDPerson = @IDPerson
+	end

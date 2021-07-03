@@ -13,7 +13,7 @@ import java.util.Optional;
  *
  * @author mgali
  */
-public interface Repository {
+public interface RepositoryMovie {
     
     int createMovie(Movie movie) throws Exception;
     void createMovies(List<Movie> movies) throws Exception;
