@@ -5,10 +5,8 @@
  */
 package hr.myproject.model;
 
-import hr.myproject.enumeration.GenreEnumeration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -24,31 +22,29 @@ public class Movie {
     private LocalDateTime publishedDate;
     private String description;
     private String originalTitle;
-    private List<Person> persons;
-    private int duration;
-    private List<GenreEnumeration> genre;
+    private Person director;
+    private List<Person> actors;
+    private String duration;
+    private String genre;
     private String picturePath;
-    private String link;
-    private Date startDate;
 
     public Movie() {
     }    
     
-    public Movie(String title, LocalDateTime publishedDate, String description, String originalTitle, List<Person> persons, int duration, List<GenreEnumeration> genre, String picturePath, String link, Date startDate) {
+    public Movie(String title, LocalDateTime publishedDate, String description, String originalTitle, Person person, List<Person> persons, String duration, String genre, String picturePath) {
         this.title = title;
         this.publishedDate = publishedDate;
         this.description = description;
         this.originalTitle = originalTitle;
-        this.persons = persons;
+        this.director = person;
+        this.actors = persons;
         this.duration = duration;
         this.genre = genre;
         this.picturePath = picturePath;
-        this.link = link;
-        this.startDate = startDate;
     }
 
-    public Movie(int id, String title, LocalDateTime publishedDate, String description, String originalTitle, List<Person> persons, int duration, List<GenreEnumeration> genre, String picturePath, String link, Date startDate) {
-        this(title, publishedDate, description, originalTitle, persons, duration, genre, picturePath, link, startDate);
+    public Movie(int id, String title, LocalDateTime publishedDate, String description, String originalTitle, Person director, List<Person> actors, String duration, String genre, String picturePath) {
+        this(title, publishedDate, description, originalTitle, director, actors, duration, genre, picturePath);
         this.id = id;        
     }
 
@@ -88,27 +84,35 @@ public class Movie {
         this.originalTitle = originalTitle;
     }
 
-    public List<Person> getPersons() {
-        return persons;
+    public Person getDirector() {
+        return director;
     }
 
-    public void setPersons(List<Person> actors) {
-        this.persons = actors;
+    public void setDirector(Person director) {
+        this.director = director;
     }
 
-    public int getDuration() {
+    public List<Person> getActors() {
+        return actors;
+    }
+
+    public void setActors(List<Person> actors) {
+        this.actors = actors;
+    }       
+
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 
-    public List<GenreEnumeration> getGenre() {
+    public String getGenre() {
         return genre;
     }
 
-    public void setGenre(List<GenreEnumeration> genre) {
+    public void setGenre(String genre) {
         this.genre = genre;
     }
 
@@ -120,28 +124,8 @@ public class Movie {
         this.picturePath = picturePath;
     }
 
-    public String getLink() {
-        return link;
-    }
-
-    public void setLink(String movieLink) {
-        this.link = movieLink;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
     @Override
     public String toString() {
         return id + " - " + title;
-    }
-    
-    
-    
-    
+    }    
 }

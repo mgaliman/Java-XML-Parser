@@ -29,11 +29,9 @@ public class SqlRepositoryMovie implements RepositoryMovie {
     private static final String DURATION = "Duration";
     private static final String GENRE = "Genre";
     private static final String PICTURE_PATH = "PicturePath";
-    private static final String LINK = "Link";
-    private static final String START_DATE = "StartDate";
 
-    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?,?) }";
-    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?,?,?) }";
+    private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?) }";
+    private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
     private static final String SELECT_MOVIES = "{ CALL selectMovies }"; 
@@ -49,16 +47,14 @@ public class SqlRepositoryMovie implements RepositoryMovie {
             stmt.setString(2, movie.getPublishedDate().format(Movie.DATE_FORMATTER));
             stmt.setString(3, movie.getDescription());
             stmt.setString(4, movie.getOriginalTitle());
-            stmt.setString(5, String.valueOf(movie.getPersons()));
-            stmt.setString(6, String.valueOf(movie.getDuration()));
+            stmt.setInt(5, movie.getDirector().getId());
+            stmt.setString(6, movie.getDuration());
             stmt.setString(7, String.valueOf(movie.getGenre()));
             stmt.setString(8, movie.getPicturePath());
-            stmt.setString(9, movie.getLink());
-            stmt.setString(10, movie.getStartDate().toString());
-            stmt.registerOutParameter(11, Types.INTEGER);
+            stmt.registerOutParameter(9, Types.INTEGER);
 
             stmt.executeUpdate();
-            return stmt.getInt(11);
+            return stmt.getInt(9);
         }
     }
 
@@ -73,13 +69,11 @@ public class SqlRepositoryMovie implements RepositoryMovie {
                 stmt.setString(2, movie.getPublishedDate().format(Movie.DATE_FORMATTER));
                 stmt.setString(3, movie.getDescription());
                 stmt.setString(4, movie.getOriginalTitle());
-                stmt.setString(5, String.valueOf(movie.getPersons()));
-                stmt.setString(6, String.valueOf(movie.getDuration()));
-                stmt.setString(7, String.valueOf(movie.getGenre()));
+                stmt.setInt(5, movie.getDirector().getId());
+                stmt.setString(6, movie.getDuration());
+                stmt.setString(7, movie.getGenre());
                 stmt.setString(8, movie.getPicturePath());
-                stmt.setString(9, movie.getLink());
-                stmt.setString(10, movie.getStartDate().toString());
-                stmt.registerOutParameter(11, Types.INTEGER);
+                stmt.registerOutParameter(9, Types.INTEGER);
 
                 stmt.executeUpdate();
             }
@@ -87,22 +81,20 @@ public class SqlRepositoryMovie implements RepositoryMovie {
     }
 
     @Override
-    public void updateMovie(int id, Movie data) throws Exception {
+    public void updateMovie(int id, Movie movie) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(UPDATE_MOVIE)) {
 
-            stmt.setString(1, data.getTitle());
-            stmt.setString(2, data.getPublishedDate().format(Movie.DATE_FORMATTER));
-            stmt.setString(3, data.getDescription());
-            stmt.setString(4, data.getOriginalTitle());
-            stmt.setString(5, String.valueOf(data.getPersons()));
-            stmt.setString(6, String.valueOf(data.getDuration()));
-            stmt.setString(7, String.valueOf(data.getGenre()));
-            stmt.setString(8, data.getPicturePath());
-            stmt.setString(9, data.getLink());
-            stmt.setString(10, data.getStartDate().toString());
-            stmt.setInt(11, id);
+            stmt.setInt(1, movie.getId());
+            stmt.setString(2, movie.getTitle());
+            stmt.setString(3, movie.getPublishedDate().format(Movie.DATE_FORMATTER));
+            stmt.setString(4, movie.getDescription());
+            stmt.setString(5, movie.getOriginalTitle());
+            stmt.setInt(6, movie.getDirector().getId());
+            stmt.setString(7, String.valueOf(movie.getDuration()));
+            stmt.setString(8, String.valueOf(movie.getGenre()));
+            stmt.setString(9, movie.getPicturePath());
 
             stmt.executeUpdate();
         }
@@ -139,9 +131,7 @@ public class SqlRepositoryMovie implements RepositoryMovie {
                             rs.getString(PERSON_ID),
                             rs.getString(DURATION),
                             rs.getString(GENRE),
-                            rs.getString(PICTURE_PATH),
-                            rs.getString(LINK),
-                            rs.getString(START_DATE)));
+                            rs.getString(PICTURE_PATH)));
                 }
             }
         }
@@ -163,12 +153,10 @@ public class SqlRepositoryMovie implements RepositoryMovie {
                         LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
                         rs.getString(DESCRIPTION),
                         rs.getString(ORIGINAL_TITLE),
-                        rs.getObject(new List<Person>()),
+                        rs.getString(PERSON_ID),
                         rs.getString(DURATION),
                         rs.getString(GENRE),
-                        rs.getString(PICTURE_PATH),
-                        rs.getString(LINK),
-                        rs.getString(START_DATE)));
+                        rs.getString(PICTURE_PATH)));
             }
         }
         return movies;

@@ -5,6 +5,13 @@
  */
 package hr.algebra;
 
+import hr.myproject.parsers.rss.MovieParser;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.xml.stream.XMLStreamException;
+
 /**
  *
  * @author mgali
@@ -16,6 +23,7 @@ public class Main extends javax.swing.JFrame {
      */
     public Main() {
         initComponents();
+        initMainTester();
     }
 
     /**
@@ -183,4 +191,16 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTabbedPane jTabbedPane2;
     // End of variables declaration//GEN-END:variables
+
+    private void initMainTester() {
+        try {
+            MovieParser.parse();
+        } catch (IOException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (XMLStreamException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }
