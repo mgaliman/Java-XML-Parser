@@ -21,9 +21,7 @@ public enum TagType {
     ACTORS("glumci"),
     DURATION("trajanje"),
     GENRE("zanr"),
-    PICTURE_PATH("plakat"),
-    LINK("link"),
-    START_DATE("pocetak");
+    PICTURE_PATH("plakat");
     
     private final String name;
 
