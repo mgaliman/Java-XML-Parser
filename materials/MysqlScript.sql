@@ -40,6 +40,15 @@ CREATE TABLE MovieActor
 )
 go
 
+CREATE TABLE Account
+(
+	IDAccount INT PRIMARY KEY IDENTITY,
+	IsAdmin bit not null,
+	Username NVARCHAR(300),
+	Pass NVARCHAR(300)
+)
+GO
+
 --MOVIE PROCEDURES--
 ---------------------
 CREATE PROCEDURE createMovie
@@ -103,17 +112,23 @@ AS
 GO
 
 CREATE PROCEDURE selectMovies
-AS 
-	BEGIN 
-		SELECT * FROM Movie
-	END
+AS
+BEGIN
+	SELECT m.IDMovie, m.Title, m.PublishedDate, m.Description, m.OriginalTitle, m.Duration, m.Genre, m.PicturePath, m.PersonID, p.FirstName, p.LastName
+	
+	FROM Movie AS m
+	FULL JOIN Person AS p
+		ON m.PersonID = p.IDPerson	
+	WHERE m.IDMovie IS NOT NULL and p.IDPerson IS NOT NULL
+END
 GO
 
 CREATE PROCEDURE deleteMovies
 AS 
 	BEGIN
+		DELETE FROM MovieActor
 		DELETE FROM Movie
-		DELETE FROM Person
+		DELETE FROM Person		
 	END
 go
 
@@ -125,8 +140,15 @@ CREATE PROCEDURE createPerson
 	@ID INT OUTPUT
 AS 
 	BEGIN 
-		INSERT INTO Person VALUES(@FirstName, @LastName)
-		SET @ID = SCOPE_IDENTITY()
+		IF exists (select * from Person as p where p.FirstName = @FirstName and p.LastName = @LastName)
+			BEGIN
+				select @ID = p.IDPerson from Person as p where p.FirstName = @FirstName and p.LastName = @LastName
+			END
+		ELSE
+			BEGIN
+				INSERT INTO Person VALUES(@FirstName, @LastName)
+				SET @ID = SCOPE_IDENTITY()
+			END		
 	END
 GO
 
@@ -165,5 +187,49 @@ CREATE PROCEDURE selectPersons
 AS 
 	BEGIN 
 		SELECT * FROM Person
+	END
+GO
+
+--ACCOUNT PROCEDURES--
+----------------------
+CREATE PROCEDURE createAccount
+	@Username NVARCHAR(300),
+	@Pass NVARCHAR(300),
+	@IsAdmin bit,
+	@ID INT OUTPUT
+AS 
+	BEGIN 
+		INSERT INTO Account VALUES(@Username, @Pass, @IsAdmin)
+		SET @ID = SCOPE_IDENTITY()
+	END
+GO
+
+CREATE PROCEDURE selectAccount
+	@IDAccount INT
+AS 
+	BEGIN 
+		SELECT * FROM Account WHERE @IDAccount = @IDAccount
+	END
+GO
+
+--MOVIE ACTOR PROCEDURES--
+--------------------------
+CREATE PROCEDURE createMovieActor
+	@MovieID int,
+	@PersonID int,
+	@ID INT OUTPUT
+AS 
+	BEGIN
+		INSERT INTO MovieActor values (@MovieID, @PersonID) 
+		SET @ID = SCOPE_IDENTITY()
+	END		
+GO
+
+CREATE PROCEDURE selectMovieActors
+	@MovieID int
+AS
+	BEGIN
+		SELECT Person.IDPerson, Person.FirstName, Person.LastName FROM MovieActor INNER JOIN Person on Person.IDPerson = MovieActor.PersonID
+		WHERE MovieActor.MovieID = @MovieID
 	END
 GO

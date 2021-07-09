@@ -5,6 +5,8 @@
  */
 package hr.myproject;
 
+import hr.myproject.model.Person;
+
 /**
  *
  * @author mgali
@@ -137,8 +139,8 @@ public class PersonManegerPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JList<String> lsActors;
-    private javax.swing.JList<String> lsDirectors;
-    private javax.swing.JList<String> lsFavourites;
+    private javax.swing.JList<Person> lsActors;
+    private javax.swing.JList<Person> lsDirectors;
+    private javax.swing.JList<Person> lsFavourites;
     // End of variables declaration//GEN-END:variables
 }

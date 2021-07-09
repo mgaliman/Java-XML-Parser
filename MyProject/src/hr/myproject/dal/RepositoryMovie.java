@@ -6,6 +6,7 @@
 package hr.myproject.dal;
 
 import hr.myproject.model.Movie;
+import hr.myproject.model.Person;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,15 @@ public interface RepositoryMovie {
     void deleteMovie(int id) throws Exception;
     Optional<Movie> selectMovie(int id) throws Exception;
     List<Movie> selectMovies() throws Exception;
+    void deleteMovies() throws Exception;
+    
+    
+    int createPerson(Person person) throws Exception;
+    void updatePerson(int id, Person data) throws Exception;
+    void deletePerson(int id) throws Exception;
+    Optional<Person> selectPerson(int id) throws Exception;
+    List<Person> selectPersons() throws Exception;
+    
+    int createMovieActor(Person person, Movie movie) throws Exception;
+    List<Person> selectMovieActors(int id) throws Exception;
 }

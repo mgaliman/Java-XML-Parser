@@ -5,6 +5,8 @@
  */
 package hr.myproject;
 
+import hr.myproject.model.Person;
+
 /**
  *
  * @author mgali
@@ -28,7 +30,7 @@ public class MovieManagerPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblMovies = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         tflTitle = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
@@ -56,7 +58,7 @@ public class MovieManagerPanel extends javax.swing.JPanel {
         btnChoose5 = new javax.swing.JButton();
         btnChoose4 = new javax.swing.JButton();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblMovies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -67,7 +69,7 @@ public class MovieManagerPanel extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tblMovies);
 
         jLabel1.setText("Title");
 
@@ -246,10 +248,10 @@ public class MovieManagerPanel extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTable jTable1;
     private javax.swing.JLabel lblPicture;
-    private javax.swing.JList<String> lsActors;
+    private javax.swing.JList<Person> lsActors;
     private javax.swing.JTextArea taDescription;
+    private javax.swing.JTable tblMovies;
     private javax.swing.JTextField tfDirector;
     private javax.swing.JTextField tfDuration;
     private javax.swing.JTextField tfGenre;

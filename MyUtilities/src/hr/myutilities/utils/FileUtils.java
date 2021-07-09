@@ -17,20 +17,29 @@ import java.nio.file.Paths;
  *
  * @author mgali
  */
-public class FileUtils {   
+public class FileUtils {
 
     public static void copyFromUrl(String pictureUrl, String picturePath) throws IOException {
         createDirHieararchy(picturePath);
         HttpURLConnection con = UrlConnectionFactory.getHttpUrlConnection(pictureUrl);
-        try(InputStream is = con.getInputStream()) {
+        try (InputStream is = con.getInputStream()) {
             Files.copy(is, Paths.get(picturePath));
-        }        
+        }
     }
 
     private static void createDirHieararchy(String path) throws IOException {
         String dir = path.substring(0, path.lastIndexOf(File.separator));
         if (!Files.exists(Paths.get(dir))) {
             Files.createDirectories(Paths.get(dir));
+        }
+    }
+
+    public static void emptyDirectory(File directory) {
+        for (File file : directory.listFiles()) {
+            if (file.isDirectory()) {
+                emptyDirectory(file);
+            }
+            file.delete();
         }
     }
 }

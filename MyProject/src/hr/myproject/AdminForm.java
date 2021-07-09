@@ -1,6 +1,7 @@
 package hr.myproject;
 
 import hr.myutilities.utils.MessageUtils;
+import java.awt.BorderLayout;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -187,6 +188,7 @@ public class AdminForm extends javax.swing.JFrame {
     }
 
     private void init() {
+        pnlContainer.setLayout(new BorderLayout());
         pnlContainer.add(new UploadManagerPanel());
     }
 }

@@ -10,13 +10,13 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Types;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import hr.myproject.dal.RepositoryMovie;
 import hr.myproject.model.Person;
+import java.time.LocalDateTime;
 
 public class SqlRepositoryMovie implements RepositoryMovie {
 
@@ -30,12 +30,25 @@ public class SqlRepositoryMovie implements RepositoryMovie {
     private static final String GENRE = "Genre";
     private static final String PICTURE_PATH = "PicturePath";
 
+    private static final String ID_PERSON = "IDPerson";
+    private static final String FIRST_NAME = "FirstName";
+    private static final String LAST_NAME = "LastName";
+
     private static final String CREATE_MOVIE = "{ CALL createMovie (?,?,?,?,?,?,?,?,?) }";
     private static final String UPDATE_MOVIE = "{ CALL updateMovie (?,?,?,?,?,?,?,?,?) }";
     private static final String DELETE_MOVIE = "{ CALL deleteMovie (?) }";
     private static final String SELECT_MOVIE = "{ CALL selectMovie (?) }";
-    private static final String SELECT_MOVIES = "{ CALL selectMovies }"; 
+    private static final String SELECT_MOVIES = "{ CALL selectMovies }";
+    private static final String DELETE_MOVIES = "{ CALL deleteMovies }";
 
+    private static final String CREATE_PERSON = "{ CALL createPerson (?,?,?) }";
+    private static final String UPDATE_PERSON = "{ CALL updatePerson (?,?,?) }";
+    private static final String DELETE_PERSON = "{ CALL deletePerson (?) }";
+    private static final String SELECT_PERSON = "{ CALL selectPerson (?) }";
+    private static final String SELECT_PERSONS = "{ CALL selectPersons }";
+
+    private static final String CREATE_MOVIE_ACTOR = "{ CALL createMovieActor (?,?,?) }";
+    private static final String SELECT_MOVIE_ACTORS = "{ CALL selectMovieActors (?) }";
 
     @Override
     public int createMovie(Movie movie) throws Exception {
@@ -121,18 +134,19 @@ public class SqlRepositoryMovie implements RepositoryMovie {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
 
-                if (rs.next()) {
-                    return Optional.of(new Movie(
-                            rs.getInt(ID_MOVIE),
-                            rs.getString(TITLE),
-                            LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
-                            rs.getString(DESCRIPTION),
-                            rs.getString(ORIGINAL_TITLE),
-                            rs.getString(PERSON_ID),
-                            rs.getString(DURATION),
-                            rs.getString(GENRE),
-                            rs.getString(PICTURE_PATH)));
-                }
+                /*return Optional.of(new Movie(
+                rs.getInt(ID_MOVIE),
+                rs.getString(TITLE),
+                LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
+                rs.getString(DESCRIPTION),
+                rs.getString(ORIGINAL_TITLE),
+                new Person(rs.getInt(PERSON_ID),
+                rs.getString(TITLE),
+                rs.getString(LAST_NAME)),
+                new ArrayList<Person>(),
+                rs.getString(DURATION),
+                rs.getString(GENRE),
+                rs.getString(PICTURE_PATH)));*/
             }
         }
         return Optional.empty();
@@ -147,18 +161,145 @@ public class SqlRepositoryMovie implements RepositoryMovie {
                 ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                movies.add(new Movie(
+                Movie movie = new Movie(
                         rs.getInt(ID_MOVIE),
                         rs.getString(TITLE),
                         LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
                         rs.getString(DESCRIPTION),
                         rs.getString(ORIGINAL_TITLE),
-                        rs.getString(PERSON_ID),
+                        new Person(rs.getInt(PERSON_ID),
+                                rs.getString(TITLE),
+                                rs.getString(LAST_NAME)),
+                        null,
                         rs.getString(DURATION),
                         rs.getString(GENRE),
-                        rs.getString(PICTURE_PATH)));
+                        rs.getString(PICTURE_PATH));
+                movie.setActors(selectMovieActors(movie.getId()));
+
+                movies.add(movie);
             }
         }
         return movies;
+    }
+
+    @Override
+    public int createPerson(Person person) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_PERSON)) {
+
+            stmt.setString(1, person.getFirstName());
+            stmt.setString(2, person.getLastName());
+            stmt.registerOutParameter(3, Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt(3);
+        }
+    }
+
+    @Override
+    public void updatePerson(int id, Person data) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(UPDATE_PERSON)) {
+
+            stmt.setString(1, data.getFirstName());
+            stmt.setString(2, data.getLastName());
+            stmt.registerOutParameter(3, Types.INTEGER);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void deletePerson(int id) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_PERSON)) {
+
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public Optional<Person> selectPerson(int id) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_PERSON)) {
+
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return Optional.of(new Person(
+                            rs.getInt(id)));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public List<Person> selectPersons() throws Exception {
+        List<Person> persons = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_PERSONS);
+                ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                persons.add(new Person(
+                        rs.getInt(ID_PERSON),
+                        rs.getString(FIRST_NAME),
+                        rs.getString(LAST_NAME)));
+            }
+        }
+        return persons;
+    }
+
+    @Override
+    public int createMovieActor(Person person, Movie movie) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(CREATE_MOVIE_ACTOR)) {
+
+            stmt.setInt(1, movie.getId());
+            stmt.setInt(2, person.getId());
+            stmt.registerOutParameter(3, Types.INTEGER);
+
+            stmt.executeUpdate();
+            return stmt.getInt(3);
+        }
+    }
+
+    @Override
+    public List<Person> selectMovieActors(int id) throws Exception {
+        List<Person> persons = new ArrayList<>();
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_MOVIE_ACTORS)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    persons.add(new Person(
+                            rs.getInt(ID_PERSON),
+                            rs.getString(FIRST_NAME),
+                            rs.getString(LAST_NAME)));
+                }
+            }
+
+            return persons;
+        }
+    }
+
+    @Override
+    public void deleteMovies() throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(DELETE_MOVIES)) {
+            stmt.executeUpdate();
+        }
     }
 }
