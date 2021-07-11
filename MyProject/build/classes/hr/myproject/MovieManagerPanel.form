@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.3" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Events>
+    <EventHandler event="componentShown" listener="java.awt.event.ComponentListener" parameters="java.awt.event.ComponentEvent" handler="formComponentShown"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -20,7 +23,7 @@
           <Group type="102" alignment="0" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                  <Component id="btnChoose5" max="32767" attributes="0"/>
+                  <Component id="btnDeleteMovie" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jLabel4" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -29,7 +32,7 @@
                               <Component id="tfDirector" alignment="0" pref="200" max="32767" attributes="0"/>
                               <Component id="tfPubDate" alignment="0" max="32767" attributes="0"/>
                               <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="tflTitle" alignment="0" max="32767" attributes="0"/>
+                              <Component id="tfTitle" alignment="0" max="32767" attributes="0"/>
                               <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="tfOriginalTitle" alignment="0" max="32767" attributes="0"/>
                           </Group>
@@ -46,12 +49,12 @@
                                       <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                                       <Component id="tfGenre" alignment="0" max="32767" attributes="0"/>
                                       <Component id="tfDuration" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="btnChoose4" alignment="1" min="-2" pref="223" max="-2" attributes="0"/>
+                                      <Component id="btnUpdateMovie" alignment="1" min="-2" pref="223" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
                       </Group>
-                      <Component id="btnChoose3" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
+                      <Component id="btnAddMovie" alignment="0" min="-2" pref="200" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace type="separate" max="32767" attributes="0"/>
@@ -64,7 +67,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jScrollPane3" min="-2" pref="200" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="btnUpdateActor" min="-2" pref="90" max="-2" attributes="0"/>
+                              <Component id="btnAddActor" min="-2" pref="90" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="btnDeleteActor" min="-2" pref="90" max="-2" attributes="0"/>
                           </Group>
@@ -98,7 +101,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="0">
-                              <Component id="tflTitle" min="-2" max="-2" attributes="0"/>
+                              <Component id="tfTitle" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="separate" max="-2" attributes="0"/>
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -144,7 +147,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="tfPicturePath" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnUpdateActor" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnAddActor" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnDeleteActor" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="btnChoosePicture" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -152,13 +155,13 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="btnChoose3" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="btnChoose4" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnAddMovie" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="btnUpdateMovie" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="btnChoose5" min="-2" max="-2" attributes="0"/>
+              <Component id="btnDeleteMovie" min="-2" max="-2" attributes="0"/>
               <EmptySpace type="separate" max="-2" attributes="0"/>
               <Component id="jScrollPane1" pref="244" max="32767" attributes="0"/>
           </Group>
@@ -184,6 +187,10 @@
               </Table>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblMoviesMouseClicked"/>
+            <EventHandler event="mouseReleased" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="tblMoviesMouseReleased"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
@@ -192,7 +199,7 @@
         <Property name="text" type="java.lang.String" value="Title"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JTextField" name="tflTitle">
+    <Component class="javax.swing.JTextField" name="tfTitle">
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel2">
       <Properties>
@@ -282,7 +289,7 @@
         <Property name="text" type="java.lang.String" value="Choose"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnUpdateActor">
+    <Component class="javax.swing.JButton" name="btnAddActor">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
@@ -298,7 +305,7 @@
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnChoose3">
+    <Component class="javax.swing.JButton" name="btnAddMovie">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
@@ -306,7 +313,7 @@
         <Property name="text" type="java.lang.String" value="Add"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnChoose5">
+    <Component class="javax.swing.JButton" name="btnDeleteMovie">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="0" green="0" id="red" palette="1" red="ff" type="palette"/>
@@ -314,7 +321,7 @@
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JButton" name="btnChoose4">
+    <Component class="javax.swing.JButton" name="btnUpdateMovie">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="ff" green="0" id="blue" palette="1" red="0" type="palette"/>

@@ -5,13 +5,36 @@
  */
 package hr.myproject;
 
+import hr.algebra.handlers.PersonTransferable;
+import hr.myproject.dal.RepositoryFactory;
+import hr.myproject.dal.RepositoryMovie;
 import hr.myproject.model.Person;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.io.IOException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.swing.DefaultListModel;
+import javax.swing.DropMode;
+import javax.swing.JComponent;
+import javax.swing.JList;
+import javax.swing.ListSelectionModel;
+import javax.swing.TransferHandler;
 
 /**
  *
  * @author mgali
  */
 public class PersonManegerPanel extends javax.swing.JPanel {
+
+    RepositoryMovie repositoryMovie;
+
+    private DefaultListModel<Person> actorsModel;
+    private DefaultListModel<Person> directorsModel;
+
+    private DefaultListModel<Person> favoritePersonModel;
 
     /**
      * Creates new form PersonManegerPanel
@@ -38,9 +61,15 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         jLabel3 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         lsDirectors = new javax.swing.JList<>();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnEditDirector = new javax.swing.JButton();
+        btnDeleteFavourite = new javax.swing.JButton();
+        btnEditActor = new javax.swing.JButton();
+
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                formComponentShown(evt);
+            }
+        });
 
         jLabel1.setText("Actors");
 
@@ -54,14 +83,14 @@ public class PersonManegerPanel extends javax.swing.JPanel {
 
         jScrollPane3.setViewportView(lsDirectors);
 
-        jButton1.setBackground(java.awt.Color.blue);
-        jButton1.setText("Edit");
+        btnEditDirector.setBackground(java.awt.Color.blue);
+        btnEditDirector.setText("Edit");
 
-        jButton2.setBackground(java.awt.Color.red);
-        jButton2.setText("Delete");
+        btnDeleteFavourite.setBackground(java.awt.Color.red);
+        btnDeleteFavourite.setText("Delete");
 
-        jButton3.setBackground(java.awt.Color.blue);
-        jButton3.setText("Edit");
+        btnEditActor.setBackground(java.awt.Color.blue);
+        btnEditActor.setText("Edit");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -77,7 +106,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
                         .addContainerGap()
                         .addComponent(jLabel1)
                         .addGap(51, 51, 51)
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEditActor, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(120, 120, 120)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -85,7 +114,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(35, 35, 35)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnDeleteFavourite, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(105, 105, 105)))
                 .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -93,7 +122,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(39, 39, 39)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnEditDirector, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(12, 12, 12)))
                 .addGap(88, 88, 88))
         );
@@ -105,7 +134,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
                         .addGap(69, 69, 69)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
-                            .addComponent(jButton1))
+                            .addComponent(btnEditDirector))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
@@ -113,12 +142,12 @@ public class PersonManegerPanel extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(68, 68, 68)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton3)
+                                    .addComponent(btnEditActor)
                                     .addComponent(jLabel1)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jButton2)
+                                    .addComponent(btnDeleteFavourite)
                                     .addComponent(jLabel2))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -128,11 +157,15 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
+        init();
+    }//GEN-LAST:event_formComponentShown
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnDeleteFavourite;
+    private javax.swing.JButton btnEditActor;
+    private javax.swing.JButton btnEditDirector;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -143,4 +176,104 @@ public class PersonManegerPanel extends javax.swing.JPanel {
     private javax.swing.JList<Person> lsDirectors;
     private javax.swing.JList<Person> lsFavourites;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+        try {
+            initRepository();
+            initModels();
+            loadListModels();
+            initDragNDrop();
+        } catch (Exception ex) {
+            Logger.getLogger(PersonManegerPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void initRepository() throws Exception {
+        repositoryMovie = RepositoryFactory.GetMovieRepository();
+    }
+
+    private void initModels() {
+        actorsModel = new DefaultListModel<>();
+        directorsModel = new DefaultListModel<>();
+        favoritePersonModel = new DefaultListModel<>();
+    }
+
+    private void loadListModels() throws Exception {
+        loadListModel(repositoryMovie.selectPersons().stream().sorted().collect(Collectors.toList()), actorsModel, lsActors);
+        loadListModel(repositoryMovie.selectPersons().stream().sorted().collect(Collectors.toList()), directorsModel, lsDirectors);
+        loadListModel(repositoryMovie.selectFavoritePersons().stream().sorted().collect(Collectors.toList()), favoritePersonModel, lsFavourites);
+
+    }
+
+    private void loadListModel(List<Person> personList, DefaultListModel<Person> personModel, JList<Person> lsPerson) {
+        personModel.clear();
+        personList.forEach(personModel::addElement);
+        lsPerson.setModel(personModel);
+    }
+
+    private void initDragNDrop() {
+        lsActors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        lsActors.setDragEnabled(true);
+        lsActors.setTransferHandler(new ExportActorHandler());
+
+        lsDirectors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        lsDirectors.setDragEnabled(true);
+        lsDirectors.setTransferHandler(new ExportDirectorHandler());
+
+        lsFavourites.setDropMode(DropMode.ON);
+        lsFavourites.setTransferHandler(new ImportPersonHandler());
+    }
+
+    private class ExportActorHandler extends TransferHandler {
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return COPY;
+        }
+
+        @Override
+        public Transferable createTransferable(JComponent c) {
+            return new PersonTransferable(lsActors.getSelectedValue());
+        }
+    }
+
+    private class ExportDirectorHandler extends TransferHandler {
+
+        @Override
+        public int getSourceActions(JComponent c) {
+            return COPY;
+        }
+
+        @Override
+        public Transferable createTransferable(JComponent c) {
+            return new PersonTransferable(lsDirectors.getSelectedValue());
+        }
+    }
+
+    public class ImportPersonHandler extends TransferHandler {
+
+        @Override
+        public boolean canImport(TransferHandler.TransferSupport support) {
+            return support.isDataFlavorSupported(PersonTransferable.PERSON_FLAVOR);
+        }
+
+        @Override
+        public boolean importData(TransferHandler.TransferSupport support) {
+            Transferable transferable = support.getTransferable();
+            try {
+                Person add = (Person) transferable.getTransferData(PersonTransferable.PERSON_FLAVOR);
+                if (!favoritePersonModel.contains(add) && !actorsModel.contains(add) && !directorsModel.contains(add)) {
+                    repositoryMovie.addFavoritePerson(add.getId());
+                    loadListModels();
+                    return true;
+                }
+            } catch (UnsupportedFlavorException | IOException ex) {
+                Logger.getLogger(PersonManegerPanel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (Exception ex) {
+                Logger.getLogger(PersonManegerPanel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return false;
+        }
+
+    }
 }
