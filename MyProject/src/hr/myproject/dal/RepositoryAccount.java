@@ -14,5 +14,6 @@ import java.util.Optional;
  */
 public interface RepositoryAccount {
     int createAccount(Account account) throws Exception;
-    Optional<Account> selectPerson(int id) throws Exception;
+    Optional<Account> selectAccount(String id) throws Exception;
+    boolean doesAccountExist(String id) throws Exception;
 }

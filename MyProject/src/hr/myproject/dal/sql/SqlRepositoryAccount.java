@@ -22,11 +22,11 @@ public class SqlRepositoryAccount implements RepositoryAccount{
 
     private static final String ID_ACCOUNT = "IDAccount";
     private static final String USERNAME = "Username";
-    private static final String PASSWORD = "Password";
+    private static final String PASSWORD = "Pass";
     private static final String IS_ADMIN = "IsAdmin";
 
-    private static final String CREATE_ACCOUNT = "{ CALL createPerson (?,?,?,?) }";
-    private static final String SELECT_ACCOUNT = "{ CALL selectPerson (?) }";
+    private static final String CREATE_ACCOUNT = "{ CALL createAccount (?,?,?) }";
+    private static final String SELECT_ACCOUNT = "{ CALL selectAccount (?) }";
 
     @Override
     public int createAccount(Account account) throws Exception {
@@ -36,29 +36,48 @@ public class SqlRepositoryAccount implements RepositoryAccount{
 
             stmt.setString(1, account.getUserName());
             stmt.setString(2, account.getPassword());
-            stmt.setBoolean(3, account.isAdmin());
-            stmt.registerOutParameter(4, Types.INTEGER);
+            stmt.registerOutParameter(3, Types.INTEGER);
 
             stmt.executeUpdate();
-            return stmt.getInt(4);
+            return stmt.getInt(3);
         }
     }
 
     @Override
-    public Optional<Account> selectPerson(int id) throws Exception {
+    public Optional<Account> selectAccount(String userName) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(SELECT_ACCOUNT)) {
 
-            stmt.setInt(1, id);
+            stmt.setString(1, userName);
             try (ResultSet rs = stmt.executeQuery()) {
 
                 if (rs.next()) {
                     return Optional.of(new Account(
-                            rs.getInt(id)));
+                            rs.getInt(ID_ACCOUNT),
+                            rs.getString(USERNAME),
+                            rs.getString(PASSWORD),
+                            rs.getBoolean(IS_ADMIN)));
                 }
             }
         }
         return Optional.empty();
+    }
+    
+    @Override
+    public boolean doesAccountExist(String userName) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_ACCOUNT)) {
+
+            stmt.setString(1, userName);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

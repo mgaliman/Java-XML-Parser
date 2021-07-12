@@ -41,6 +41,8 @@ public class MovieParser {
     private static final String EXT = ".jpg";
     private static final String DIR = "assets";
 
+    private static final String REGEX = "\\<.*?>\\";
+    
     private static final String SEPARATOR = ",";
 
     private MovieParser() {
@@ -87,7 +89,7 @@ public class MovieParser {
                                     break;
                                 case DESCRIPTION:
                                     if (movie != null && !data.isEmpty()) {
-                                        movie.setDescription(data.substring(data.lastIndexOf("\">") +2 , data.lastIndexOf("<br />")).trim());
+                                        movie.setDescription(data.replaceAll(REGEX,""));
                                     }
                                     break;
                                 case ORG_TITLE:

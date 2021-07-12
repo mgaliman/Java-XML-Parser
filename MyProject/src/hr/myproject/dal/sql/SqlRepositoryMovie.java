@@ -50,6 +50,9 @@ public class SqlRepositoryMovie implements RepositoryMovie {
     private static final String CREATE_MOVIE_ACTOR = "{ CALL createMovieActor (?,?,?) }";
     private static final String SELECT_MOVIE_ACTORS = "{ CALL selectMovieActors (?) }";
 
+    private static final String ADD_FAVORITE_PERSON = "{ CALL AddFavoritePerson (?) }";
+    private static final String SELECT_FAVORITE_PERSONS = "{ CALL SelectFavoritePersons }";
+
     @Override
     public int createMovie(Movie movie) throws Exception {
         DataSource dataSource = DataSourceSingleton.getInstance();
@@ -134,19 +137,21 @@ public class SqlRepositoryMovie implements RepositoryMovie {
             stmt.setInt(1, id);
             try (ResultSet rs = stmt.executeQuery()) {
 
-                /*return Optional.of(new Movie(
-                rs.getInt(ID_MOVIE),
-                rs.getString(TITLE),
-                LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
-                rs.getString(DESCRIPTION),
-                rs.getString(ORIGINAL_TITLE),
-                new Person(rs.getInt(PERSON_ID),
-                rs.getString(TITLE),
-                rs.getString(LAST_NAME)),
-                new ArrayList<Person>(),
-                rs.getString(DURATION),
-                rs.getString(GENRE),
-                rs.getString(PICTURE_PATH)));*/
+                if (rs.next()) {
+                    return Optional.of(new Movie(
+                            rs.getInt(ID_MOVIE),
+                            rs.getString(TITLE),
+                            LocalDateTime.parse(rs.getString(PUBLISHED_DATE), Movie.DATE_FORMATTER),
+                            rs.getString(DESCRIPTION),
+                            rs.getString(ORIGINAL_TITLE),
+                            new Person(rs.getInt(PERSON_ID),
+                                    rs.getString(FIRST_NAME),
+                                    rs.getString(LAST_NAME)),
+                            selectMovieActors(rs.getInt(ID_MOVIE)),
+                            rs.getString(DURATION),
+                            rs.getString(GENRE),
+                            rs.getString(PICTURE_PATH)));
+                }
             }
         }
         return Optional.empty();
@@ -168,7 +173,7 @@ public class SqlRepositoryMovie implements RepositoryMovie {
                         rs.getString(DESCRIPTION),
                         rs.getString(ORIGINAL_TITLE),
                         new Person(rs.getInt(PERSON_ID),
-                                rs.getString(TITLE),
+                                rs.getString(FIRST_NAME),
                                 rs.getString(LAST_NAME)),
                         null,
                         rs.getString(DURATION),
@@ -299,6 +304,35 @@ public class SqlRepositoryMovie implements RepositoryMovie {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(DELETE_MOVIES)) {
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public List<Person> selectFavoritePersons() throws Exception {
+        List<Person> favoritePersons = new ArrayList<>();
+
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(SELECT_FAVORITE_PERSONS);
+                ResultSet rs = stmt.executeQuery()) {
+            while (rs.next()) {
+                favoritePersons.add(new Person(
+                        rs.getInt(ID_PERSON),
+                        rs.getString(FIRST_NAME),
+                        rs.getString(LAST_NAME)));
+            }
+        }
+        return favoritePersons;
+    }
+
+    @Override
+    public void addFavoritePerson(int id) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(ADD_FAVORITE_PERSON)) {
+            stmt.setInt(1, id);
+
             stmt.executeUpdate();
         }
     }

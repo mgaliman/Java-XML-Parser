@@ -40,6 +40,13 @@ CREATE TABLE MovieActor
 )
 go
 
+CREATE TABLE FavoritePerson
+(
+	IDFavoritePerson int CONSTRAINT PK_FavoritePerson PRIMARY KEY IDENTITY,
+	PersonID int CONSTRAINT FK_FavoriteActor_Actor FOREIGN KEY REFERENCES Person(IDPerson) NOT NULL
+)
+GO
+
 CREATE TABLE Account
 (
 	IDAccount INT PRIMARY KEY IDENTITY,
@@ -107,7 +114,9 @@ CREATE PROCEDURE selectMovie
 	@IDMovie INT
 AS 
 	BEGIN 
-		SELECT * FROM Movie	WHERE IDMovie = @IDMovie
+		SELECT m.IDMovie, m.Title, m.PublishedDate, m.Description, m.OriginalTitle, m.PersonID, m.Duration, m.Genre, m.PicturePath, p.IDPerson, p.LastName, p.FirstName FROM Movie as m	
+		INNER JOIN Person as p on m.PersonID = p.IDPerson
+		WHERE IDMovie = @IDMovie
 	END
 GO
 
@@ -190,25 +199,43 @@ AS
 	END
 GO
 
+CREATE PROCEDURE AddFavoritePerson
+	@ActorID int
+AS
+BEGIN
+	INSERT INTO FavoritePerson(PersonID)
+	VALUES(@ActorID)
+END
+GO
+
+CREATE PROCEDURE SelectFavoritePersons
+AS
+	BEGIN
+		SELECT p.IDPerson, p.FirstName, p.LastName
+		FROM FavoritePerson AS fp
+		INNER JOIN Person AS p
+		ON p.IDPerson = fp.PersonID
+	END
+GO
+
 --ACCOUNT PROCEDURES--
 ----------------------
 CREATE PROCEDURE createAccount
 	@Username NVARCHAR(300),
 	@Pass NVARCHAR(300),
-	@IsAdmin bit,
 	@ID INT OUTPUT
 AS 
 	BEGIN 
-		INSERT INTO Account VALUES(@Username, @Pass, @IsAdmin)
+		INSERT INTO Account VALUES(0,@Username, @Pass)
 		SET @ID = SCOPE_IDENTITY()
 	END
 GO
 
 CREATE PROCEDURE selectAccount
-	@IDAccount INT
-AS 
-	BEGIN 
-		SELECT * FROM Account WHERE @IDAccount = @IDAccount
+	@Username NVARCHAR(300)
+AS
+	BEGIN
+		SELECT * FROM Account WHERE Username = @Username
 	END
 GO
 
@@ -233,3 +260,5 @@ AS
 		WHERE MovieActor.MovieID = @MovieID
 	END
 GO
+
+insert into Account values (1,'admin','admin')

@@ -10,7 +10,7 @@ package hr.myproject.model;
  * @author mgali
  */
 public class Person implements Comparable<Person> {
-    
+
     private int id;
     private String firstName;
     private String lastName;
@@ -30,16 +30,16 @@ public class Person implements Comparable<Person> {
 
     public Person(int id) {
         this.id = id;
-    }    
-    
+    }
+
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
-    }    
-    
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -59,11 +59,26 @@ public class Person implements Comparable<Person> {
     @Override
     public String toString() {
         return id + " - " + firstName + " - " + lastName;
-    }       
+    }
 
     @Override
     public int compareTo(Person o) {
         return Integer.valueOf(id).compareTo(o.id);
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Person) {
+            return id == ((Person) obj).id;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 13;
+        hash = 71 * hash + id;
+        return hash;
+    }
+
 }

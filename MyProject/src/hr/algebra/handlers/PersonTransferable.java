@@ -17,7 +17,7 @@ import java.io.IOException;
  */
 public class PersonTransferable implements Transferable {
 
-    public static final DataFlavor PERSON_FLAVOR = new DataFlavor(Person.class, "Author");
+    public static final DataFlavor PERSON_FLAVOR = new DataFlavor(Person.class, "Person");
     private static final DataFlavor[] SUPPORTED_FLAVORS = {PERSON_FLAVOR};
 
     private final Person person;

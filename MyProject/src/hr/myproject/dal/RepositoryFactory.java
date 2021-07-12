@@ -20,7 +20,7 @@ public class RepositoryFactory {
         return new SqlRepositoryMovie();
     }
     
-    public static RepositoryAccount GetUserRepository() throws Exception {
+    public static RepositoryAccount GetAccountRepository() throws Exception {
         return new SqlRepositoryAccount();
     }
 }

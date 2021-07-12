@@ -31,8 +31,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
 
     RepositoryMovie repositoryMovie;
 
-    private DefaultListModel<Person> actorsModel;
-    private DefaultListModel<Person> directorsModel;
+    private DefaultListModel<Person> personModel;
 
     private DefaultListModel<Person> favoritePersonModel;
 
@@ -58,10 +57,6 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         lsFavourites = new javax.swing.JList<>();
-        jLabel3 = new javax.swing.JLabel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        lsDirectors = new javax.swing.JList<>();
-        btnEditDirector = new javax.swing.JButton();
         btnDeleteFavourite = new javax.swing.JButton();
         btnEditActor = new javax.swing.JButton();
 
@@ -79,13 +74,6 @@ public class PersonManegerPanel extends javax.swing.JPanel {
 
         jScrollPane2.setViewportView(lsFavourites);
 
-        jLabel3.setText("Directors");
-
-        jScrollPane3.setViewportView(lsDirectors);
-
-        btnEditDirector.setBackground(java.awt.Color.blue);
-        btnEditDirector.setText("Edit");
-
         btnDeleteFavourite.setBackground(java.awt.Color.red);
         btnDeleteFavourite.setText("Delete");
 
@@ -97,13 +85,13 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(259, 259, 259)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(108, 108, 108)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(104, 104, 104))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addContainerGap()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
                         .addGap(51, 51, 51)
                         .addComponent(btnEditActor, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -111,49 +99,29 @@ public class PersonManegerPanel extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(35, 35, 35)
                         .addComponent(btnDeleteFavourite, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(105, 105, 105)))
-                .addGap(9, 9, 9)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addGap(39, 39, 39)
-                        .addComponent(btnEditDirector, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(12, 12, 12)))
-                .addGap(88, 88, 88))
+                        .addGap(14, 14, 14)))
+                .addGap(237, 237, 237))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(78, 78, 78)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(69, 69, 69)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(btnEditDirector))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(68, 68, 68)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(btnEditActor)
-                                    .addComponent(jLabel1)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(btnDeleteFavourite)
-                                    .addComponent(jLabel2))))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(93, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnEditActor)
+                        .addComponent(jLabel1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(btnDeleteFavourite)
+                        .addComponent(jLabel2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -165,15 +133,11 @@ public class PersonManegerPanel extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnDeleteFavourite;
     private javax.swing.JButton btnEditActor;
-    private javax.swing.JButton btnEditDirector;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JList<Person> lsActors;
-    private javax.swing.JList<Person> lsDirectors;
     private javax.swing.JList<Person> lsFavourites;
     // End of variables declaration//GEN-END:variables
 
@@ -193,14 +157,12 @@ public class PersonManegerPanel extends javax.swing.JPanel {
     }
 
     private void initModels() {
-        actorsModel = new DefaultListModel<>();
-        directorsModel = new DefaultListModel<>();
+        personModel = new DefaultListModel<>();
         favoritePersonModel = new DefaultListModel<>();
     }
 
     private void loadListModels() throws Exception {
-        loadListModel(repositoryMovie.selectPersons().stream().sorted().collect(Collectors.toList()), actorsModel, lsActors);
-        loadListModel(repositoryMovie.selectPersons().stream().sorted().collect(Collectors.toList()), directorsModel, lsDirectors);
+        loadListModel(repositoryMovie.selectPersons().stream().sorted().collect(Collectors.toList()), personModel, lsActors);
         loadListModel(repositoryMovie.selectFavoritePersons().stream().sorted().collect(Collectors.toList()), favoritePersonModel, lsFavourites);
 
     }
@@ -215,10 +177,6 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         lsActors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         lsActors.setDragEnabled(true);
         lsActors.setTransferHandler(new ExportActorHandler());
-
-        lsDirectors.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        lsDirectors.setDragEnabled(true);
-        lsDirectors.setTransferHandler(new ExportDirectorHandler());
 
         lsFavourites.setDropMode(DropMode.ON);
         lsFavourites.setTransferHandler(new ImportPersonHandler());
@@ -237,19 +195,6 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         }
     }
 
-    private class ExportDirectorHandler extends TransferHandler {
-
-        @Override
-        public int getSourceActions(JComponent c) {
-            return COPY;
-        }
-
-        @Override
-        public Transferable createTransferable(JComponent c) {
-            return new PersonTransferable(lsDirectors.getSelectedValue());
-        }
-    }
-
     public class ImportPersonHandler extends TransferHandler {
 
         @Override
@@ -262,7 +207,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
             Transferable transferable = support.getTransferable();
             try {
                 Person add = (Person) transferable.getTransferData(PersonTransferable.PERSON_FLAVOR);
-                if (!favoritePersonModel.contains(add) && !actorsModel.contains(add) && !directorsModel.contains(add)) {
+                if (!favoritePersonModel.contains(add)) {
                     repositoryMovie.addFavoritePerson(add.getId());
                     loadListModels();
                     return true;

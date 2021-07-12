@@ -17,8 +17,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultListModel;
 import javax.swing.ListSelectionModel;
 
 /**
@@ -31,6 +33,7 @@ public class MovieManagerPanel extends javax.swing.JPanel {
     
     RepositoryMovie repositoryMovie;
     MovieTable movieTable;
+    private DefaultListModel<Person> actorsModel;
 
     private Set<Person> actorsAdd;
     private Set<Person> actorsRemove;
@@ -116,6 +119,7 @@ public class MovieManagerPanel extends javax.swing.JPanel {
         jLabel3.setText("Description");
 
         taDescription.setColumns(20);
+        taDescription.setLineWrap(true);
         taDescription.setRows(5);
         jScrollPane2.setViewportView(taDescription);
 
@@ -316,8 +320,9 @@ public class MovieManagerPanel extends javax.swing.JPanel {
             //initValidation();
             //initActorsSet();
             initRepository();
-            //initActorsListModel();
+            initActorsModel();
             initTable();
+            initSets();
         } catch (Exception ex) {
             Logger.getLogger(MovieManagerPanel.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -335,13 +340,14 @@ public class MovieManagerPanel extends javax.swing.JPanel {
     private void initTable() throws Exception {
         tblMovies.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblMovies.setAutoCreateRowSorter(true);
-        tblMovies.setRowHeight(25);
+        tblMovies.setRowHeight(20);
         movieTable = new MovieTable(repositoryMovie.selectMovies());
         tblMovies.setModel(movieTable);
     }
 
     private void clearActorSets() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        actorsAdd.clear();
+        actorsRemove.clear();
     }
 
     private void showMovie() {
@@ -376,6 +382,24 @@ public class MovieManagerPanel extends javax.swing.JPanel {
             lblPicture.setIcon(IconUtils.createIcon(new File(movie.getPicturePath()), lblPicture.getWidth(), lblPicture.getHeight()));
         }
 
-        //loadActors(movie);
+        loadActors(movie);
+    }
+
+    private void loadActors(Movie movie) {
+        actorsModel.clear();
+        if (!movie.getActors().isEmpty()) {
+            movie.getActors().forEach(actorsModel::addElement);
+        }
+        lsActors.setModel(actorsModel);
+    }
+
+    private void initSets() {
+        actorsAdd = new TreeSet<>();
+        actorsRemove = new TreeSet<>();
+    }
+
+    private void initActorsModel() {
+        actorsModel = new DefaultListModel<>();
+        lsActors.setModel(actorsModel);
     }
 }

@@ -28,6 +28,11 @@ public class Account {
         this(userName, password, role);
         this.id = id;
     }    
+
+    public Account(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
+    }    
     
     public Account(int id) {
         this.id = id;

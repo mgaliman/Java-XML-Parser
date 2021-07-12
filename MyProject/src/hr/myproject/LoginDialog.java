@@ -5,18 +5,31 @@
  */
 package hr.myproject;
 
+import hr.myproject.dal.RepositoryAccount;
+import hr.myproject.dal.RepositoryFactory;
+import hr.myproject.enumeration.AccountType;
+import hr.myproject.model.Account;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+
 /**
  *
  * @author mgali
  */
 public class LoginDialog extends javax.swing.JDialog {
-
+    
+    RepositoryAccount repositoryAccount;
+    
     /**
      * Creates new form Login
      */
     public LoginDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        init();
     }
 
     /**
@@ -29,13 +42,13 @@ public class LoginDialog extends javax.swing.JDialog {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        lblUsername = new javax.swing.JTextField();
+        tfUsername = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        btnConfirm = new javax.swing.JButton();
+        btnLogIn = new javax.swing.JButton();
         lblError = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        cbAccountType = new javax.swing.JComboBox<>();
         btnRegister = new javax.swing.JButton();
-        psfPassword = new javax.swing.JPasswordField();
+        tfPassword = new javax.swing.JPasswordField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login Dialog");
@@ -47,17 +60,15 @@ public class LoginDialog extends javax.swing.JDialog {
         jLabel2.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         jLabel2.setText("Password");
 
-        btnConfirm.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        btnConfirm.setText("Log in");
-        btnConfirm.addActionListener(new java.awt.event.ActionListener() {
+        btnLogIn.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        btnLogIn.setText("Log in");
+        btnLogIn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnConfirmActionPerformed(evt);
+                btnLogInActionPerformed(evt);
             }
         });
 
         lblError.setForeground(java.awt.Color.red);
-
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Admin", "User" }));
 
         btnRegister.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
         btnRegister.setText("Register");
@@ -74,33 +85,33 @@ public class LoginDialog extends javax.swing.JDialog {
             .addGroup(layout.createSequentialGroup()
                 .addGap(48, 48, 48)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(psfPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
-                    .addComponent(lblUsername)
+                    .addComponent(tfPassword, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                    .addComponent(tfUsername)
                     .addComponent(btnRegister, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
-                    .addComponent(btnConfirm, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
+                    .addComponent(btnLogIn, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                     .addComponent(lblError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cbAccountType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(cbAccountType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(psfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnConfirm)
+                .addComponent(btnLogIn)
                 .addGap(18, 18, 18)
                 .addComponent(btnRegister)
                 .addContainerGap(34, Short.MAX_VALUE))
@@ -110,19 +121,54 @@ public class LoginDialog extends javax.swing.JDialog {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnConfirmActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnConfirmActionPerformed
+    private void btnLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogInActionPerformed
+        try {
+            Account account = new Account(tfUsername.getText().trim(),tfPassword.getText().trim());
+            
+            if (!repositoryAccount.doesAccountExist(tfUsername.getText().trim())) {             
+                return;
+            }
+            switch ((AccountType)cbAccountType.getSelectedItem())
+            {          
+                case USER:
+                    Optional<Account> existingAccount = repositoryAccount.selectAccount(tfUsername.getText().trim());
+                    if (!account.getPassword().equals(existingAccount.get().getPassword())) {
+                        return;
+                    }
+                    dispose();
+                    new UserForm().setVisible(true);
+                    break;
+                case ADMIN:
+                    Optional<Account> existingAdminAccount = repositoryAccount.selectAccount(tfUsername.getText().trim());
+                    if (!account.getPassword().equals(existingAdminAccount.get().getPassword()) && !existingAdminAccount.get().isAdmin()) {
+                        return;
+                    }
+                    dispose();
+                    new AdminForm().setVisible(true);
+                    break;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnLogInActionPerformed
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
-        // TODO add your handling code here:
+        try {
+            Account account = new Account(tfUsername.getText().trim(),tfPassword.getText().trim());              
+            if (repositoryAccount.doesAccountExist(tfUsername.getText().trim())) {
+                return;
+            }
+            repositoryAccount.createAccount(account);
+        } catch (Exception ex) {
+            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnRegisterActionPerformed
 
     /**
      * @param args the command line arguments
      */
     public static void main(String args[]) {
-        
+
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -163,13 +209,33 @@ public class LoginDialog extends javax.swing.JDialog {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnConfirm;
+    private javax.swing.JButton btnLogIn;
     private javax.swing.JButton btnRegister;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<AccountType> cbAccountType;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblError;
-    private javax.swing.JTextField lblUsername;
-    private javax.swing.JPasswordField psfPassword;
+    private javax.swing.JPasswordField tfPassword;
+    private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
+
+    private void init() {
+        try {
+            initRepository();
+            initAccountTypes();
+        } catch (Exception ex) {
+            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void initRepository() throws Exception {
+        repositoryAccount = RepositoryFactory.GetAccountRepository();
+    }
+
+    private void initAccountTypes() {
+        DefaultComboBoxModel<AccountType> accountTypeModel = new DefaultComboBoxModel<>();
+        Arrays.asList(AccountType.values()).forEach(accountTypeModel::addElement);
+        cbAccountType.setModel(accountTypeModel);
+    }
+
 }
