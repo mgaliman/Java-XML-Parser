@@ -52,6 +52,7 @@ public class SqlRepositoryMovie implements RepositoryMovie {
 
     private static final String ADD_FAVORITE_PERSON = "{ CALL AddFavoritePerson (?) }";
     private static final String SELECT_FAVORITE_PERSONS = "{ CALL SelectFavoritePersons }";
+    private static final String REMOVE_FAVORITE_PERSONS = "{ CALL RemoveFavoritePersons (?) }";
 
     @Override
     public int createMovie(Movie movie) throws Exception {
@@ -331,6 +332,18 @@ public class SqlRepositoryMovie implements RepositoryMovie {
         DataSource dataSource = DataSourceSingleton.getInstance();
         try (Connection con = dataSource.getConnection();
                 CallableStatement stmt = con.prepareCall(ADD_FAVORITE_PERSON)) {
+            stmt.setInt(1, id);
+
+            stmt.executeUpdate();
+        }
+    }
+
+    @Override
+    public void removeFavoritePerson(int id) throws Exception {
+        DataSource dataSource = DataSourceSingleton.getInstance();
+        try (Connection con = dataSource.getConnection();
+                CallableStatement stmt = con.prepareCall(REMOVE_FAVORITE_PERSONS)) {
+
             stmt.setInt(1, id);
 
             stmt.executeUpdate();

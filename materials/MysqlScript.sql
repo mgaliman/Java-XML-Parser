@@ -218,6 +218,14 @@ AS
 	END
 GO
 
+CREATE PROCEDURE RemoveFavoritePersons
+	@ActorID int
+AS
+	BEGIN
+		DELETE FROM FavoritePerson
+		WHERE FavoritePerson.PersonID = @ActorID
+	END 
+GO
 --ACCOUNT PROCEDURES--
 ----------------------
 CREATE PROCEDURE createAccount

@@ -35,5 +35,6 @@ public interface RepositoryMovie {
     List<Person> selectMovieActors(int id) throws Exception;
 
     List<Person> selectFavoritePersons() throws Exception;
-    void addFavoritePerson(int id) throws Exception;
+    void addFavoritePerson(int id) throws Exception;    
+    void removeFavoritePerson(int id) throws Exception;
 }

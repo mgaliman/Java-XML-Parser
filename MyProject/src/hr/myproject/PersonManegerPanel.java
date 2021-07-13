@@ -34,6 +34,8 @@ public class PersonManegerPanel extends javax.swing.JPanel {
     private DefaultListModel<Person> personModel;
 
     private DefaultListModel<Person> favoritePersonModel;
+    
+    private Person selectedFavoritePerson = null;
 
     /**
      * Creates new form PersonManegerPanel
@@ -66,7 +68,7 @@ public class PersonManegerPanel extends javax.swing.JPanel {
             }
         });
 
-        jLabel1.setText("Actors");
+        jLabel1.setText("Persons");
 
         jScrollPane1.setViewportView(lsActors);
 
@@ -76,6 +78,11 @@ public class PersonManegerPanel extends javax.swing.JPanel {
 
         btnDeleteFavourite.setBackground(java.awt.Color.red);
         btnDeleteFavourite.setText("Delete");
+        btnDeleteFavourite.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteFavouriteActionPerformed(evt);
+            }
+        });
 
         btnEditActor.setBackground(java.awt.Color.blue);
         btnEditActor.setText("Edit");
@@ -85,26 +92,25 @@ public class PersonManegerPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(259, 259, 259)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(104, 104, 104))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(264, 264, 264)
                         .addComponent(jLabel1)
                         .addGap(51, 51, 51)
-                        .addComponent(btnEditActor, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120)))
+                        .addComponent(btnEditActor, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(214, 214, 214)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(116, 116, 116)
                         .addComponent(jLabel2)
                         .addGap(35, 35, 35)
-                        .addComponent(btnDeleteFavourite, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(14, 14, 14)))
-                .addGap(237, 237, 237))
+                        .addComponent(btnDeleteFavourite, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(104, 104, 104)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(192, 192, 192))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -128,6 +134,16 @@ public class PersonManegerPanel extends javax.swing.JPanel {
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         init();
     }//GEN-LAST:event_formComponentShown
+
+    private void btnDeleteFavouriteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteFavouriteActionPerformed
+        try {
+            selectedFavoritePerson = lsFavourites.getSelectedValue();
+            repositoryMovie.removeFavoritePerson(selectedFavoritePerson.getId());
+            loadListModels();
+        } catch (Exception ex) {
+            Logger.getLogger(PersonManegerPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDeleteFavouriteActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -40,8 +40,6 @@ public class MovieParser {
     private static final String RSS_URL = "https://www.blitz-cinestar.hr/rss.aspx?";
     private static final String EXT = ".jpg";
     private static final String DIR = "assets";
-
-    private static final String REGEX = "\\<.*?>\\";
     
     private static final String SEPARATOR = ",";
 
@@ -88,8 +86,8 @@ public class MovieParser {
                                     }
                                     break;
                                 case DESCRIPTION:
-                                    if (movie != null && !data.isEmpty()) {
-                                        movie.setDescription(data.replaceAll(REGEX,""));
+                                    if (movie != null && !data.isEmpty()) {                                        
+                                        movie.setDescription(data.substring(data.lastIndexOf("\">") +2 , data.lastIndexOf("<br />")).trim());
                                     }
                                     break;
                                 case ORG_TITLE:
@@ -97,12 +95,12 @@ public class MovieParser {
                                         movie.setOriginalTitle(data);
                                     }
                                     break;
-                                case DIRECTOR: //Na temelju imena i prezimena dovuci ili kreiraj  persona // proc GetOrCreate
+                                case DIRECTOR:
                                     if (movie != null && !data.isEmpty()) {
                                         movie.setDirector(getPerson(data));
                                     }
                                     break;
-                                case ACTORS: //Na temelju imena i prezimena dovuci ili kreiraj  persona // proc GetOrCreate za svakoga Actora
+                                case ACTORS:
                                     if (movie != null && !data.isEmpty()) {
                                         List<Person> actors = new ArrayList<>();
                                         String[] peopleInfo = data.split(SEPARATOR);

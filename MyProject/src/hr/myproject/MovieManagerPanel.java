@@ -34,11 +34,12 @@ public class MovieManagerPanel extends javax.swing.JPanel {
     RepositoryMovie repositoryMovie;
     MovieTable movieTable;
     private DefaultListModel<Person> actorsModel;
-
+    
     private Set<Person> actorsAdd;
     private Set<Person> actorsRemove;
     
     private Movie selectedMovie;
+    private Person selectedPerson;
 
     /**
      * Creates new form MovieManagerPanel
@@ -143,6 +144,11 @@ public class MovieManagerPanel extends javax.swing.JPanel {
 
         btnDeleteActor.setBackground(java.awt.Color.red);
         btnDeleteActor.setText("Delete");
+        btnDeleteActor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActorActionPerformed(evt);
+            }
+        });
 
         btnAddMovie.setBackground(java.awt.Color.green);
         btnAddMovie.setText("Add");
@@ -283,6 +289,13 @@ public class MovieManagerPanel extends javax.swing.JPanel {
         initMovieSelect();
     }//GEN-LAST:event_tblMoviesMouseReleased
 
+    private void btnDeleteActorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActorActionPerformed
+        selectedPerson = lsActors.getSelectedValue();
+        actorsRemove.add(selectedPerson);
+        actorsModel.removeElement(selectedPerson);
+        selectedPerson = null;
+    }//GEN-LAST:event_btnDeleteActorActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddActor;
@@ -381,7 +394,6 @@ public class MovieManagerPanel extends javax.swing.JPanel {
             tfPicturePath.setText(movie.getPicturePath());
             lblPicture.setIcon(IconUtils.createIcon(new File(movie.getPicturePath()), lblPicture.getWidth(), lblPicture.getHeight()));
         }
-
         loadActors(movie);
     }
 
