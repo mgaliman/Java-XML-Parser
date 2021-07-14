@@ -80,5 +80,4 @@ public class Person implements Comparable<Person> {
         hash = 71 * hash + id;
         return hash;
     }
-
 }

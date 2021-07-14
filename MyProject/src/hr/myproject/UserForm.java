@@ -5,6 +5,10 @@
  */
 package hr.myproject;
 
+import hr.myproject.dal.RepositoryFactory;
+import hr.myproject.dal.RepositoryMovie;
+import hr.myproject.model.MovieXML;
+import hr.myutilities.utils.JAXBUtils;
 import hr.myutilities.utils.MessageUtils;
 import java.util.Arrays;
 import java.util.logging.Level;
@@ -20,6 +24,8 @@ import javax.swing.UnsupportedLookAndFeelException;
  * @author mgali
  */
 public class UserForm extends javax.swing.JFrame {
+
+    RepositoryMovie repositoryMovie;
 
     /**
      * Creates new form UserForm
@@ -42,8 +48,8 @@ public class UserForm extends javax.swing.JFrame {
         tpContainer = new javax.swing.JTabbedPane();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        miDownloadMovies = new javax.swing.JMenuItem();
         miExit = new javax.swing.JMenuItem();
+        miXMLDownload = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         menuLookAndFeel = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
@@ -55,9 +61,7 @@ public class UserForm extends javax.swing.JFrame {
 
         jMenu1.setText("File");
 
-        miDownloadMovies.setText("Download XML");
-        jMenu1.add(miDownloadMovies);
-
+        miExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_L, java.awt.event.InputEvent.CTRL_MASK));
         miExit.setText("Log out");
         miExit.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -65,6 +69,15 @@ public class UserForm extends javax.swing.JFrame {
             }
         });
         jMenu1.add(miExit);
+
+        miXMLDownload.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        miXMLDownload.setText("XML Download");
+        miXMLDownload.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                miXMLDownloadActionPerformed(evt);
+            }
+        });
+        jMenu1.add(miXMLDownload);
 
         jMenuBar1.add(jMenu1);
 
@@ -77,6 +90,7 @@ public class UserForm extends javax.swing.JFrame {
 
         jMenu3.setText("Help");
 
+        miAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
         miAbout.setText("About");
         miAbout.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -106,12 +120,23 @@ public class UserForm extends javax.swing.JFrame {
 
     private void miExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miExitActionPerformed
         dispose();
-        new LoginDialog(this, rootPaneCheckingEnabled).setVisible(true); 
+        new LoginDialog(this, rootPaneCheckingEnabled).setVisible(true);
     }//GEN-LAST:event_miExitActionPerformed
 
     private void miAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miAboutActionPerformed
         MessageUtils.showInformationMessage("About", "This is my first Java project.");
     }//GEN-LAST:event_miAboutActionPerformed
+
+    private void miXMLDownloadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miXMLDownloadActionPerformed
+        try {
+            if (repositoryMovie == null) {
+                initRepositroyMovie();
+            }
+            JAXBUtils.save(new MovieXML(repositoryMovie.selectMovies()), "XML");
+        } catch (Exception ex) {
+            Logger.getLogger(UserForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_miXMLDownloadActionPerformed
 
     /**
      * @param args the command line arguments
@@ -124,8 +149,8 @@ public class UserForm extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenu menuLookAndFeel;
     private javax.swing.JMenuItem miAbout;
-    private javax.swing.JMenuItem miDownloadMovies;
     private javax.swing.JMenuItem miExit;
+    private javax.swing.JMenuItem miXMLDownload;
     private javax.swing.JTabbedPane tpContainer;
     // End of variables declaration//GEN-END:variables
 
@@ -152,5 +177,9 @@ public class UserForm extends javax.swing.JFrame {
     private void init() {
         tpContainer.add("Movie manager", new MovieManagerPanel());
         tpContainer.add("Person manager", new PersonManegerPanel());
+    }
+
+    private void initRepositroyMovie() throws Exception {
+        repositoryMovie = RepositoryFactory.GetMovieRepository();
     }
 }

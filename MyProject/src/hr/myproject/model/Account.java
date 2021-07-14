@@ -64,10 +64,5 @@ public class Account {
 
     public void setAdmin(boolean role) {
         this.admin = role;
-    }
-
-    @Override
-    public String toString() {
-        return userName + " - " + password + " - " + (admin? "Admin" : "User");
     }    
 }

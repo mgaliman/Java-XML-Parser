@@ -106,6 +106,7 @@ CREATE PROCEDURE deleteMovie
 	@IDMovie INT	 
 AS 
 	BEGIN 
+		DELETE FROM MovieActor WHERE MovieID = @IDMovie
 		DELETE FROM Movie WHERE IDMovie = @IDMovie
 	END
 GO
@@ -180,6 +181,7 @@ CREATE PROCEDURE deletePerson
 	@IDPerson INT	 
 AS 
 	BEGIN 
+		DELETE FROM FavoritePerson WHERE PersonID = @IDPerson
 		DELETE  FROM Person	WHERE IDPerson = @IDPerson
 	END
 GO

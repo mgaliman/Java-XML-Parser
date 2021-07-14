@@ -8,24 +8,38 @@ package hr.myproject.model;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
  *
  * @author mgali
  */
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder = {"publishedDate", "title", "originalTitle", "duration", "genre", "director", "actors", "description", "picturePath"})
 public class Movie {    
     
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     
+    @XmlAttribute
     private int id;
     private String title;
+    @XmlElement(name = "publisheddate")
+    @XmlJavaTypeAdapter(PubDateAdapter.class)
     private LocalDateTime publishedDate;
     private String description;
+    @XmlElement(name = "originaltitle")
     private String originalTitle;
     private Person director;
+    @XmlElement(name = "actor")
     private List<Person> actors;
     private String duration;
     private String genre;
+    @XmlElement(name = "picturepath")
     private String picturePath;
 
     public Movie() {

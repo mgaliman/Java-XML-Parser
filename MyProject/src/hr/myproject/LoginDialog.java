@@ -10,19 +10,25 @@ import hr.myproject.dal.RepositoryFactory;
 import hr.myproject.enumeration.AccountType;
 import hr.myproject.model.Account;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
 
 /**
  *
  * @author mgali
  */
 public class LoginDialog extends javax.swing.JDialog {
+
+    private List<JTextField> validationFields;
+    private List<JLabel> errorLabels;
     
     RepositoryAccount repositoryAccount;
-    
+
     /**
      * Creates new form Login
      */
@@ -49,6 +55,8 @@ public class LoginDialog extends javax.swing.JDialog {
         cbAccountType = new javax.swing.JComboBox<>();
         btnRegister = new javax.swing.JButton();
         tfPassword = new javax.swing.JPasswordField();
+        lblUsernameError = new javax.swing.JLabel();
+        lblPasswordError = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Login Dialog");
@@ -78,6 +86,10 @@ public class LoginDialog extends javax.swing.JDialog {
             }
         });
 
+        lblUsernameError.setForeground(java.awt.Color.red);
+
+        lblPasswordError.setForeground(java.awt.Color.red);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -92,8 +104,14 @@ public class LoginDialog extends javax.swing.JDialog {
                     .addComponent(jLabel1)
                     .addComponent(btnLogIn, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                     .addComponent(lblError, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cbAccountType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(47, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(cbAccountType, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(15, 15, 15)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblPasswordError)
+                    .addComponent(lblUsernameError))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -103,11 +121,15 @@ public class LoginDialog extends javax.swing.JDialog {
                 .addGap(18, 18, 18)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfUsername, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblUsernameError))
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tfPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblPasswordError))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblError, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -122,39 +144,40 @@ public class LoginDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLogInActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogInActionPerformed
-        try {
-            Account account = new Account(tfUsername.getText().trim(),tfPassword.getText().trim());
-            
-            if (!repositoryAccount.doesAccountExist(tfUsername.getText().trim())) {             
-                return;
+        if (formValid()) {
+            try {
+                Account account = new Account(tfUsername.getText().trim(), tfPassword.getText().trim());
+
+                if (!repositoryAccount.doesAccountExist(tfUsername.getText().trim())) {
+                    return;
+                }
+                switch ((AccountType) cbAccountType.getSelectedItem()) {
+                    case USER:
+                        Optional<Account> existingAccount = repositoryAccount.selectAccount(tfUsername.getText().trim());
+                        if (!account.getPassword().equals(existingAccount.get().getPassword())) {
+                            return;
+                        }
+                        dispose();
+                        new UserForm().setVisible(true);
+                        break;
+                    case ADMIN:
+                        Optional<Account> existingAdminAccount = repositoryAccount.selectAccount(tfUsername.getText().trim());
+                        if (!account.getPassword().equals(existingAdminAccount.get().getPassword()) && !existingAdminAccount.get().isAdmin()) {
+                            return;
+                        }
+                        dispose();
+                        new AdminForm().setVisible(true);
+                        break;
+                }
+            } catch (Exception ex) {
+                Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
             }
-            switch ((AccountType)cbAccountType.getSelectedItem())
-            {          
-                case USER:
-                    Optional<Account> existingAccount = repositoryAccount.selectAccount(tfUsername.getText().trim());
-                    if (!account.getPassword().equals(existingAccount.get().getPassword())) {
-                        return;
-                    }
-                    dispose();
-                    new UserForm().setVisible(true);
-                    break;
-                case ADMIN:
-                    Optional<Account> existingAdminAccount = repositoryAccount.selectAccount(tfUsername.getText().trim());
-                    if (!account.getPassword().equals(existingAdminAccount.get().getPassword()) && !existingAdminAccount.get().isAdmin()) {
-                        return;
-                    }
-                    dispose();
-                    new AdminForm().setVisible(true);
-                    break;
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnLogInActionPerformed
 
     private void btnRegisterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegisterActionPerformed
         try {
-            Account account = new Account(tfUsername.getText().trim(),tfPassword.getText().trim());              
+            Account account = new Account(tfUsername.getText().trim(), tfPassword.getText().trim());
             if (repositoryAccount.doesAccountExist(tfUsername.getText().trim())) {
                 return;
             }
@@ -215,17 +238,25 @@ public class LoginDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel lblError;
+    private javax.swing.JLabel lblPasswordError;
+    private javax.swing.JLabel lblUsernameError;
     private javax.swing.JPasswordField tfPassword;
     private javax.swing.JTextField tfUsername;
     // End of variables declaration//GEN-END:variables
 
     private void init() {
         try {
+            initValidation();
             initRepository();
             initAccountTypes();
         } catch (Exception ex) {
             Logger.getLogger(LoginDialog.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void initValidation() {
+        validationFields = Arrays.asList(tfUsername, tfPassword);
+        errorLabels = Arrays.asList(lblUsernameError, lblPasswordError);
     }
 
     private void initRepository() throws Exception {
@@ -236,6 +267,15 @@ public class LoginDialog extends javax.swing.JDialog {
         DefaultComboBoxModel<AccountType> accountTypeModel = new DefaultComboBoxModel<>();
         Arrays.asList(AccountType.values()).forEach(accountTypeModel::addElement);
         cbAccountType.setModel(accountTypeModel);
+    }
+
+    private boolean formValid() {
+        boolean ok = true;
+        for (int i = 0; i < validationFields.size(); i++) {
+            ok &= !validationFields.get(i).getText().trim().isEmpty();
+            errorLabels.get(i).setText(validationFields.get(i).getText().trim().isEmpty() ? "X" : "");
+        }
+        return ok;
     }
 
 }
